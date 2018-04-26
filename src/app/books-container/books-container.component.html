@@ -1,0 +1,38 @@
+<div class="div">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h5>Books
+            <button style="float: right" type="button" class="btn btn-sm btn-outline-success"(click)="onAddBook()" *ngIf="!bookSelected">Add a Book</button>
+          </h5>
+        </div>
+        <table style="cursor: pointer;" class="table table-bordered">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Title</th>
+              <th scope="col">Author Name</th>
+            </tr>
+          </thead>
+          <tbody  (click)="onEditBook(book,id)" *ngFor="let book of books; let id = index" >
+            <tr>
+              <th scope="row">{{id +1}}</th>
+              <td>{{book.Title}}</td>
+              <td>{{book.AuthorName}}
+                <span style="float: right" (click)="onRemoveBook(id)" *ngIf="!bookSelected"><i class="fas fa-trash"></i></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+        <!-- <ul class="list-group list-group-flush" *ngFor="let book of books; let id = index">
+          <li class="list-group-item" (click)="onEditBook(book,id)">
+            {{id+1}} - {{book.Title}}, {{book.AuthorName}}</li>
+        </ul> -->
