@@ -9,8 +9,9 @@ import { ServicesService } from '../services.service';
 })
 export class BooksContainerComponent implements OnInit {
 
-  bookSelected: boolean;
 
+  bookSelected: boolean;
+  books: Book[];
   // books: Book[] = [
   //   { Title: 'Title 1', Description: 'Description 1', AuthorName: 'AuthorName 1' },
   //   { Title: 'Title 2', Description: 'Description 2', AuthorName: 'AuthorName 2' },
@@ -18,16 +19,18 @@ export class BooksContainerComponent implements OnInit {
 
   constructor(private service: ServicesService) { }
 
-  books = this.service.books;
-
   ngOnInit() {
     this.service._bookToggle.subscribe(x => this.bookSelected = x);
+    this.service.booksSource.subscribe(x => this.books = x );
   }
 
 
-  onEditBook(book: Book, index: number) {
-    this.service.changeCurrentBook(book, index);
+  onEditBook(book: Book) {
+    this.service.changeCurrentBook(book);
     this.service.onToggle();
+    this.service.currentBookId.next(book.id);
+    console.log(book);
+
   }
 
   onAddBook() {
@@ -35,8 +38,8 @@ export class BooksContainerComponent implements OnInit {
     this.service._editMode.next(false);
   }
 
-  onRemoveBook(index: number) {
-    this.service.removeBook(index);
+  onRemoveBook(book: Book) {
+    this.service.removeBook(book);
     this.service.offToggle();
   }
 
