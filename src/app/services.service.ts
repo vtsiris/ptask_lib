@@ -1,23 +1,24 @@
-import { Injectable, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Book } from './models/book.model';
-import { Subject } from 'rxjs/Subject';
-
+import { Book } from './book.model';
 
 @Injectable()
-export class ServicesService implements OnDestroy {
+export class ServicesService {
 
-  book: Book[];
-  books: Book[] = [
-    {Title: 'Title 1', Description: 'Description 1', AuthorName: 'AuthorName 1' },
-    {Title: 'Title 2', Description: 'Description 2', AuthorName: 'AuthorName 2' },
-  ];
-  bookSource = new BehaviorSubject<Book>({Title: '', Description: '', AuthorName: ''});
+  books: Book[];
 
-  currentId = new BehaviorSubject(null);
+  constructor() {this.booksSource.subscribe(x => this.books = x); }
 
-  _editMode = new BehaviorSubject(false);
+  booksSource = new BehaviorSubject<Book[]>(
+    [
+      {id: 1, title: 'Title 1', description: 'Description 1', authorName: 'AuthorName 1' },
+      {id: 2, title: 'Title 2', description: 'Description 2', authorName: 'AuthorName 2' },
+    ]
+  );
+  bookSource = new BehaviorSubject<Book>({id: null, title: '', description: '', authorName: ''});
+
   _bookToggle = new BehaviorSubject(false);
+  _editMode = new BehaviorSubject(false);
 
   onToggle() {
     this._bookToggle.next(true);
@@ -27,30 +28,19 @@ export class ServicesService implements OnDestroy {
      this._bookToggle.next(false);
   }
 
-  changeCurrentBook(book: Book, index: number) {
-    this.bookSource.next(book);
-    this._editMode.next(true);
-    this.currentId.next(index);
-  }
-
-
-  onAddBook(book: Book) {
+  addBook(book: Book) {
     this.books.push(book);
+    this.booksSource.next(this.books);
   }
 
-  editBook(book: Book, index: number) {
-    this.books[index] = book;
-    // console.log('Welcome to edit mode');
-  }
+  editBook(book: Book) {
+    const newBooks = this.books.findIndex(b => b.id === book.id);
+    this.books[newBooks] = book;
+    this.booksSource.next(this.books);
+    }
 
-  removeBook(index: number) {
-    this.books.splice(index, 1);
-    console.log(index);
-
-  }
-
-  ngOnDestroy() {
-    this._bookToggle.unsubscribe();
-  }
-
+    removeBook(book: Book) {
+      const deletedBook = this.books.findIndex( b => b.id === book.id);
+      this.books.splice(deletedBook, 1);
+    }
 }

@@ -1,7 +1,0 @@
-/* input.ng-invalid.ng-touched.ng-dirty {
-  border: 1px solid red;
-} */
-
-.ng-invalid:not(form)  {
-  border-left: 5px solid #a94442; /* red */
-}

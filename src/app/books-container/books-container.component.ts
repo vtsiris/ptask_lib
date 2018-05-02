@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Book } from '../models/book.model';
 import { ServicesService } from '../services.service';
+import { Book } from '../book.model';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-books-container',
@@ -9,35 +10,57 @@ import { ServicesService } from '../services.service';
 })
 export class BooksContainerComponent implements OnInit {
 
-  bookSelected: boolean;
-
-  // books: Book[] = [
-  //   { Title: 'Title 1', Description: 'Description 1', AuthorName: 'AuthorName 1' },
-  //   { Title: 'Title 2', Description: 'Description 2', AuthorName: 'AuthorName 2' },
-  // ];
+  selectedBook: Book;
+  books: Book[];
+  _toggle: boolean;
+  _editMode: boolean;
 
   constructor(private service: ServicesService) { }
 
-  books = this.service.books;
-
   ngOnInit() {
-    this.service._bookToggle.subscribe(x => this.bookSelected = x);
-  }
-
-
-  onEditBook(book: Book, index: number) {
-    this.service.changeCurrentBook(book, index);
-    this.service.onToggle();
+    this.service.bookSource.subscribe(x => this.selectedBook = x);
+    this.service.booksSource.subscribe(x => this.books = x);
+    this.service._bookToggle.subscribe(x => this._toggle = x);
+    this.service._editMode.subscribe(x => this._editMode = x );
   }
 
   onAddBook() {
+    this.selectedBook = <Book>{};
     this.service.onToggle();
     this.service._editMode.next(false);
   }
 
-  onRemoveBook(index: number) {
-    this.service.removeBook(index);
-    this.service.offToggle();
+  onEditBook(book: Book) {
+    this.selectedBook = book;
+    this.service.onToggle();
+    this.service._editMode.next(true);
+  }
+
+  onRemoveBook(book: Book) {
+    this.service.removeBook(book);
+  }
+
+  editFormBook(book) {
+    this.service.editBook(book);
+    this.selectedBook = <Book> {};
+  }
+
+  addFormBook(book) {
+    this.service.addBook(book);
+  }
+
+  clearFormBook() {
+    this.selectedBook = <Book> {};
+    this.service._editMode.next(false);
+  }
+
+  removeFormBook(book) {
+    if (
+      window.confirm('Are sure you want to delete book: ' + book.title + '?')
+    ) {
+      this.service.removeBook(book);
+      this.service.offToggle();
+    }
   }
 
 }

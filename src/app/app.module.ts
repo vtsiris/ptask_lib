@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { BooksContainerComponent } from './books-container/books-container.component';
-import { BooksRegisterFormComponent } from './books-register-form/books-register-form.component';
+import { BookRegisterFormComponent } from './book-register-form/book-register-form.component';
 import { ServicesService } from './services.service';
 
 
@@ -13,7 +13,7 @@ import { ServicesService } from './services.service';
   declarations: [
     AppComponent,
     BooksContainerComponent,
-    BooksRegisterFormComponent
+    BookRegisterFormComponent
   ],
   imports: [
     BrowserModule,
